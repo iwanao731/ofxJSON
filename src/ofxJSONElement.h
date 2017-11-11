@@ -36,6 +36,7 @@ public:
     bool openLocal(const std::string& filename);
     bool openRemote(const std::string& filename);
     bool save(const std::string& filename, bool pretty = false) const;
+	bool append(const std::string& filename, int index, bool pretty = false, bool first = false, bool last = false) const;
     std::string getRawString(bool pretty = true) const;
 
     static std::string toString(Json::ValueType type);

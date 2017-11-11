@@ -109,6 +109,57 @@ bool ofxJSONElement::save(const std::string& filename, bool pretty) const
     return true;
 }
 
+bool ofxJSONElement::append(const std::string& filename, int index, bool pretty, bool first, bool last) const
+{
+	ofFile file;
+
+
+	if (first) {
+		file << "{" << endl;
+		if (!file.open(filename, ofFile::WriteOnly))
+		{
+			ofLogError("ofxJSONElement::save") << "Unable to open " << file.getAbsolutePath() << ".";
+			return false;
+		}
+	}
+	else {
+		if (!file.open(filename, ofFile::Append))
+		{
+			ofLogError("ofxJSONElement::save") << "Unable to open " << file.getAbsolutePath() << ".";
+			return false;
+		}
+	}
+
+	if (first) {
+		file << "{" << endl;
+		file << "\t\"frame\": [" << endl;
+	}
+
+	if (pretty)
+	{
+		Json::StyledWriter writer;
+		file << "\t\t" << writer.write(*this) << endl;
+	}
+	else if(!last){
+		Json::FastWriter writer;
+		file << "\t\t" << writer.write(*this) << ",";
+	}
+	else {
+		Json::FastWriter writer;
+		file << "\t\t" << writer.write(*this);
+	}
+
+	ofLogVerbose("ofxJSONElement::save") << "JSON saved to " << file.getAbsolutePath() << ".";
+
+	if (last) {
+		file << "\t]" << endl;
+		file << "}" << endl;
+	}
+
+	file.close();
+
+	return true;
+}
 
 std::string ofxJSONElement::getRawString(bool pretty) const
 {
